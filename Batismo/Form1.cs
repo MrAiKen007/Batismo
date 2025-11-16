@@ -52,9 +52,8 @@ namespace Batismo
             }
             return cont;
         }
-        public void Pintar(int linha, int coluna, int raio, bool superior)
+        public void Pintar(int linha, int coluna, int raio, bool superior, Color cor)
         {
-            Color cor = superior ? Color.Green : Color.Red;
             int linhaInicio = linha - raio;
             int linhaFim = linha + raio;
 
@@ -72,11 +71,19 @@ namespace Batismo
                 }
             }
         }
-        public void EncontrarMelhorEspiral(int raio, bool superior)
+        public void Pintar(int linha, int coluna, int raio, bool superior)
+        {
+            Color cor = superior ? Color.Green : Color.Green;
+            Pintar(linha, coluna, raio, superior, cor);
+        }
+
+        public void EncontrarMelhorEOptionalPior(int raio, bool superior)
         {
             int maxRatos = -1;
-            int melhorLinha = -1;
-            int melhorColuna = -1;
+            int minRatos = int.MaxValue;
+            int melhorLinha = -1, melhorColuna = -1;
+            int piorLinha = -1, piorColuna = -1;
+
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
@@ -84,20 +91,36 @@ namespace Batismo
                     if ((superior && i > 4) || (!superior && i < 5)) continue;
 
                     int totalRatos = contarRato(i, j, raio, superior);
+
                     if (totalRatos > maxRatos)
                     {
                         maxRatos = totalRatos;
                         melhorLinha = i;
                         melhorColuna = j;
                     }
+                    if (totalRatos < minRatos)
+                    {
+                        minRatos = totalRatos;
+                        piorLinha = i;
+                        piorColuna = j;
+                    }
                 }
             }
-            Pintar(melhorLinha, melhorColuna, raio, superior);
+
+            if (raio == 1 && piorLinha != -1 && piorColuna != -1)
+            {
+                Pintar(piorLinha, piorColuna, raio, superior, Color.Red);
+            }
+
+            if (melhorLinha != -1 && melhorColuna != -1)
+            {
+                Pintar(melhorLinha, melhorColuna, raio, superior);
+            }
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            EncontrarMelhorEspiral(1, true);
-            EncontrarMelhorEspiral(2, false);
+            EncontrarMelhorEOptionalPior(1, true);
+            EncontrarMelhorEOptionalPior(2, false);
         }
     }
 }
